@@ -12,5 +12,5 @@ export class signupDto {
   @Length(6, 20)
   readonly password: string;
   @IsOptional()
-  readonly role: string[];
+  readonly role?: string[];
 }

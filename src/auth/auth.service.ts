@@ -1,7 +1,7 @@
-import { ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { User } from 'src/schemas/user.schema';
+import { User } from '../schemas/user.schema';
 import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { signupDto } from './dtos/signup.dto';
@@ -16,20 +16,23 @@ export class AuthService {
   ) {}
 
   async signup(signupDto: signupDto): Promise<{ token: string }> {
-    const { name, email, password ,role} = signupDto;
-    const exsistUser = await this.userModel.findOne({ email });
-    if (exsistUser) {
-      throw new ForbiddenException('invalid email or password');
-    }
+    const { name, email, password, role } = signupDto;
+    
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await this.userModel.create({
-      name,
-      email,
-      password: hashedPassword,
-      role
-    });
-    const token = this.jwtService.sign({ id: user._id });
-    return { token };
+    try {
+      const user = await this.userModel.create({
+        name,
+        email,
+        password: hashedPassword,
+        role
+      });
+      const token = this.jwtService.sign({ id: user._id });
+      return { token };
+    } catch (err) {
+      if (err?.code === 11000) {
+        throw new ConflictException('Duplicate Email Entered');
+      }
+    }
   }
 
   async signin(signinDto: signinDto): Promise<{ token: string }> {

@@ -6,7 +6,7 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import * as mongoose from 'mongoose';
 import { updateBookmarkDto } from 'src/bookmark/dtos/updateBookmark.dto';
-import { Bookmark } from 'src/schemas/bookmark.schema';
+import { Bookmark } from '../schemas/bookmark.schema';
 import { Query } from 'express-serve-static-core';
 import { User } from 'src/schemas/user.schema';
 
@@ -30,24 +30,25 @@ export class BookmarkService {
         }
       : {};
     const books = await this.bookmarkModel
-      .find({ ...keyword }, { __v: false })
+      .find({ ...keyword })
       .limit(limit)
       .skip(skip);
     return books;
   }
 
   async creat(bookmark: Bookmark, user: User): Promise<Bookmark> {
-    const data = Object.assign(bookmark,{user:user._id})
+    const data = Object.assign(bookmark, { user: user._id });
     const res = await this.bookmarkModel.create(data);
     return res;
   }
 
   async findById(id: string): Promise<Bookmark> {
     const isValidId = mongoose.isValidObjectId(id);
+
     if (!isValidId) {
       throw new BadRequestException('not valid id');
     }
-    const bookmark = await this.bookmarkModel.findById(id, { __v: false });
+    const bookmark = await this.bookmarkModel.findById(id);
     if (!bookmark) {
       throw new NotFoundException('bookmark is not found');
     }
@@ -69,11 +70,11 @@ export class BookmarkService {
     return updatedbookmark;
   }
 
-  async delete(id: string) {
-    await this.bookmarkModel.findByIdAndDelete(id);
+  async delete(id: string):Promise<Bookmark> {
+    return await this.bookmarkModel.findByIdAndDelete(id);
   }
 
-   async uploadImages(id: string, file: Express.Multer.File) {
+  async uploadImages(id: string, file: Express.Multer.File) {
     const bookmark = await this.bookmarkModel.findById(id);
 
     if (!bookmark) {
@@ -87,4 +88,3 @@ export class BookmarkService {
     return bookmark;
   }
 }
-
