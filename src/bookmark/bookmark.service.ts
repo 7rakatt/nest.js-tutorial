@@ -8,7 +8,7 @@ import * as mongoose from 'mongoose';
 import { updateBookmarkDto } from 'src/bookmark/dtos/updateBookmark.dto';
 import { Bookmark } from '../schemas/bookmark.schema';
 import { Query } from 'express-serve-static-core';
-import { User } from 'src/schemas/user.schema';
+import { User } from '../schemas/user.schema';
 
 @Injectable()
 export class BookmarkService {

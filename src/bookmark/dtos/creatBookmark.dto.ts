@@ -6,8 +6,8 @@ import {
   IsString,
   Length,
 } from 'class-validator';
-import { Catogary } from 'src/schemas/bookmark.schema';
-import { User } from 'src/schemas/user.schema';
+import { Catogary } from '../../schemas/bookmark.schema';
+import { User } from '../../schemas/user.schema';
 
 export class creatBookmarkDto {
   @IsString()

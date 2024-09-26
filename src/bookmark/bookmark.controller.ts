@@ -17,14 +17,14 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { BookmarkService } from './bookmark.service';
-import { Bookmark } from 'src/schemas/bookmark.schema';
-import { creatBookmarkDto } from 'src/bookmark/dtos/creatBookmark.dto';
-import { updateBookmarkDto } from 'src/bookmark/dtos/updateBookmark.dto';
+import { Bookmark } from '../schemas/bookmark.schema';
+import { creatBookmarkDto } from '../bookmark/dtos/creatBookmark.dto';
+import { updateBookmarkDto } from '../bookmark/dtos/updateBookmark.dto';
 import { Query as expressQuery } from 'express-serve-static-core';
 import { AuthGuard } from '@nestjs/passport';
-import { Roles } from 'src/auth/decorators/role.decorator';
-import { Role } from 'src/auth/enums/role.enum';
-import { RolesGuard } from 'src/auth/guards/role.guard';
+import { Roles } from '../auth/decorators/role.decorator';
+import { Role } from '../auth/enums/role.enum';
+import { RolesGuard } from '../auth/guards/role.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
@@ -34,7 +34,7 @@ export class BookmarkController {
   constructor(private BookmarkService: BookmarkService) {}
 
   @Get()
-  @Roles(Role.Admin, Role.Moderator)
+  // @Roles(Role.Admin, Role.Moderator)
   @UseGuards(AuthGuard(), RolesGuard)
   async findAll(@Query() query: expressQuery): Promise<Bookmark[]> {
     return this.BookmarkService.findAll(query);
